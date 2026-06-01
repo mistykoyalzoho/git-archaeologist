@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
@@ -34,6 +34,8 @@ def test_analyze_no_history(tmp_path):
 
 
 def test_analyze_with_history(tmp_path):
+    from unittest.mock import MagicMock
+    
     analyzer = CodeAnalyzer(repo_path=tmp_path)
     commits = [make_commit("aaa"), make_commit("bbb", days_ago=20)]
 
@@ -59,6 +61,8 @@ def test_analyze_with_history(tmp_path):
 
 
 def test_llm_parse_response_well_formed():
+    from unittest.mock import MagicMock
+    
     from git_archaeologist.llm_client import LLMClient
     client = MagicMock(spec=LLMClient)
     client._parse_response = LLMClient._parse_response.__get__(client)

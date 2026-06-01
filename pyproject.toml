@@ -1,0 +1,68 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "git-archaeologist"
+version = "0.1.0"
+description = "Uncover WHY your code exists — AI-powered git history analysis"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "git-archaeologist contributors" }]
+keywords = ["git", "ai", "llm", "code-history", "openai", "developer-tools"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Version Control :: Git",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+requires-python = ">=3.10"
+dependencies = [
+    "openai>=1.30.0",
+    "typer[all]>=0.12.0",
+    "rich>=13.7.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=5.0.0",
+    "ruff>=0.4.0",
+    "mypy>=1.10.0",
+    "types-setuptools",
+]
+
+[project.urls]
+Homepage = "https://github.com/git-archaeologist/git-archaeologist"
+Repository = "https://github.com/git-archaeologist/git-archaeologist"
+Issues = "https://github.com/git-archaeologist/git-archaeologist/issues"
+Documentation = "https://git-archaeologist.readthedocs.io"
+
+[project.scripts]
+git-arch = "git_archaeologist.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/git_archaeologist"]
+
+[tool.ruff]
+src = ["src"]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--cov=git_archaeologist --cov-report=term-missing"

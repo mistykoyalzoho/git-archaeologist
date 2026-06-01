@@ -20,12 +20,12 @@ console = Console()
 err_console = Console(stderr=True)
 
 
-def _make_analyzer(repo: Path, model: str, api_key: Optional[str]) -> CodeAnalyzer:
+def _make_analyzer(repo: Path, model: str, api_key: str | None) -> CodeAnalyzer:
     try:
         return CodeAnalyzer(repo_path=repo, model=model, api_key=api_key)
     except ImportError as e:
         err_console.print(f"[red]Error:[/red] {e}")
-        raise typer.Exit(1)
+        raise typer.Exit(1) from e
 
 
 @app.command()
@@ -41,7 +41,7 @@ def why(
         "rich", "--format", "-f", help="Output format: rich | markdown | json"
     ),
     model: str = typer.Option("gpt-4o", "--model", "-m", help="OpenAI model"),
-    api_key: Optional[str] = typer.Option(None, "--api-key", envvar="OPENAI_API_KEY", help="OpenAI API key"),
+    api_key: str | None = typer.Option(None, "--api-key", envvar="OPENAI_API_KEY", help="OpenAI API key"),
 ):
     """
     Explain WHY a piece of code exists by tracing its full git history.
@@ -59,7 +59,7 @@ def why(
             result = analyzer.analyze(target, depth=depth)
         except Exception as e:
             err_console.print(f"[red]Analysis failed:[/red] {e}")
-            raise typer.Exit(1)
+            raise typer.Exit(1) from e
 
     formatter = RichFormatter(console)
     formatter.render(result, format=format)
@@ -71,7 +71,7 @@ def timeline(
     repo: Path = typer.Option(Path("."), "--repo", "-r", help="Repository root path"),
     depth: int = typer.Option(100, "--depth", "-d", help="Max commits"),
     model: str = typer.Option("gpt-4o", "--model", "-m", help="OpenAI model"),
-    api_key: Optional[str] = typer.Option(None, "--api-key", envvar="OPENAI_API_KEY"),
+    api_key: str | None = typer.Option(None, "--api-key", envvar="OPENAI_API_KEY"),
 ):
     """
     Show an AI-narrated timeline of a file's full evolution arc.
@@ -83,7 +83,7 @@ def timeline(
             result = analyzer.analyze(file, depth=depth)
         except Exception as e:
             err_console.print(f"[red]Failed:[/red] {e}")
-            raise typer.Exit(1)
+            raise typer.Exit(1) from e
 
     formatter = RichFormatter(console)
     console.rule("[bold]File Evolution Timeline[/bold]")
